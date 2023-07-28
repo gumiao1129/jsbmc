@@ -1,8 +1,9 @@
 // generateTestFile.js
 const fs = require('fs');
 const convertOperatorToJestMatcher = require('./convertOperatorToJestMatcher');
+const dir = `./__tests__`;
 
-function generateTestFile(fileLocation, functionName, codeBody, testCasesVariables, argumentType) {
+function generateTestFile(fileLocation, functionName, codeBody, testCasesVariables, argumentType, exportedFunctions) {
     const assertRegex = /assert\((.*)\);/;
     const match = codeBody.match(assertRegex);
 
@@ -28,12 +29,22 @@ function generateTestFile(fileLocation, functionName, codeBody, testCasesVariabl
     const filteredCode = splitCode.filter(item => item.trim() !== '');
     
     let testCases = '';
+    let importFunctions = '';
+
+    if(exportedFunctions.length > 0){
+      for(let i = 0; i < exportedFunctions.length; i++){
+        importFunctions += `const { ${exportedFunctions[i]} } = require('${fileLocation}');
+        `;
+      }
+    }else{
+      throw new Error('There is no module.exports.');
+    }
 
     if(testCasesVariables.length > 0){
       for(let i = 0; i < testCasesVariables.length; i++){
           testCases += `
-          test('test case variable: ${testCasesVariables[i]} ', () => {
-            expect(${filteredCode[0].replace(argumentType, testCasesVariables[i])}).toBe(${filteredCode[1].replace(argumentType, testCasesVariables[i])});
+          test("Test Variable: ${testCasesVariables[i]}", () => {
+            expect(${filteredCode[0].replace(argumentType, testCasesVariables[i])}).${jestSymbol}(${filteredCode[1].replace(argumentType, testCasesVariables[i])});
           });
           
           `;
@@ -43,12 +54,14 @@ function generateTestFile(fileLocation, functionName, codeBody, testCasesVariabl
       throw new Error('There is no test variables setup.');
     }
   const testFileContent = `
-const ${functionName} = require('${fileLocation}');
+${importFunctions}
 
 ${testCases}
 `;
-
-  fs.writeFileSync(`./__tests__/${functionName}.test.js`, testFileContent);
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+  fs.writeFileSync(dir+`/${functionName}.test.js`, testFileContent);
   console.log(`Test file ${functionName}.test.js generated successfully.`);
 }
 
