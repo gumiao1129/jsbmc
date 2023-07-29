@@ -5,8 +5,6 @@
     "main": "cli.js",
     "bin": "cli.js",
     "scripts": {
-        "start": "set ENV=DEVELOPMENT && node serve.js",
-        "dev": "set ENV=DEVELOPMENT && nodemon serve.js",
         "build-minisat": "rollup -c",
         "test": "jest"
     },
