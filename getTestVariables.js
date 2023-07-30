@@ -1,7 +1,7 @@
 const RandExp = require('randexp');
 
 function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.floor(Math.random() * (Number(max) - Number(min) + 1) + Number(min));
 }
 
 function getRandomString(minLength, maxLength) {
@@ -21,7 +21,7 @@ function getRandomString(minLength, maxLength) {
 
 function getRandomTestValue(type, min, max) {
   switch (type) {
-    case 'Number':
+    case 'Integer':
       return getRandomInt(min, max);
     case 'String':
       return getRandomString(min, max); 
@@ -39,16 +39,18 @@ function getRandomTestArray(type, size, min, max, regexPattern) {
       if(type == "String"){
         randomValue = `'${randomValue}'`;
       }
-      if(type == "Number"){
+      if(type == "Integer"){
         randomValue = randomValue.replace(/^0+/,"");
       }
       testArray.push(randomValue);
     }
   }
   else{
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < size-2; i++) {
       testArray.push(getRandomTestValue(type, min, max));
     }
+    testArray.push(getRandomTestValue(type, min, min));
+    testArray.push(getRandomTestValue(type, max, max));
   }
   return testArray;
 }

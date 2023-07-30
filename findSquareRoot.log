@@ -1,0 +1,14 @@
+[STARTED] Load JavaScript function
+[SUCCESS] Load JavaScript function
+[STARTED] Starting Bounded Model Checking
+Test file findSquareRoot.test.js generated successfully.
+
+> jsbmc@0.0.1 test
+> jest
+
+npm.cmd test completed successfully.
+[SUCCESS] Starting Bounded Model Checking
+[STARTED] Remove Test files
+[SUCCESS] Remove Test files
+
+⚡️ Bounded Model Checking completed
